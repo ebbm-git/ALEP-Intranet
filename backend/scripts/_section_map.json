@@ -1,0 +1,98 @@
+[
+  {
+    "slug": "conhecimento-alep/historia-e-percurso",
+    "start_page_idx": 3,
+    "end_page_idx": 2,
+    "heading": "1.1 História e Percurso da ALEP"
+  },
+  {
+    "slug": "conhecimento-alep/missao-visao-valores",
+    "start_page_idx": 3,
+    "end_page_idx": 3,
+    "heading": "1.2 Missão, Visão e Valores"
+  },
+  {
+    "slug": "conhecimento-alep/estrutura-organizacional",
+    "start_page_idx": 4,
+    "end_page_idx": 7,
+    "heading": "1.3 Estrutura Organizacional"
+  },
+  {
+    "slug": "conhecimento-alep/servicos-aos-associados",
+    "start_page_idx": 8,
+    "end_page_idx": 7,
+    "heading": "1.4 Serviços Prestados aos Associados"
+  },
+  {
+    "slug": "conhecimento-alep/conquistas-e-atividades",
+    "start_page_idx": 8,
+    "end_page_idx": 13,
+    "heading": "1.5 Conquistas e Atividades Desenvolvidas"
+  },
+  {
+    "slug": "conhecimento-alep/entidades-publicas-e-privadas",
+    "start_page_idx": 14,
+    "end_page_idx": 13,
+    "heading": "1.6 Relação com Entidades Públicas e Privadas"
+  },
+  {
+    "slug": "conhecimento-alep/canais-de-comunicacao",
+    "start_page_idx": 14,
+    "end_page_idx": 15,
+    "heading": "1.7 Canais de Comunicação com Associados"
+  },
+  {
+    "slug": "plano-de-atividades-2026/pontos-estrategicos-2025-2027",
+    "start_page_idx": 16,
+    "end_page_idx": 15,
+    "heading": "2.1 Pontos Estratégicos 2025–2027"
+  },
+  {
+    "slug": "plano-de-atividades-2026/iniciativas-e-eventos-2026",
+    "start_page_idx": 16,
+    "end_page_idx": 19,
+    "heading": "2.2 Iniciativas e Eventos 2026"
+  },
+  {
+    "slug": "plano-de-atividades-2026/kpis-2026",
+    "start_page_idx": 20,
+    "end_page_idx": 20,
+    "heading": "2.3 Indicadores de Desempenho (KPIs) 2026"
+  },
+  {
+    "slug": "operacao-interna/gestao-de-quotas",
+    "start_page_idx": 21,
+    "end_page_idx": 22,
+    "heading": "3.1 Gestão de Quotas"
+  },
+  {
+    "slug": "operacao-interna/renovacao-de-quotas",
+    "start_page_idx": 23,
+    "end_page_idx": 24,
+    "heading": "5.1 Visão Geral do Processo"
+  },
+  {
+    "slug": "operacao-interna/seguros",
+    "start_page_idx": 25,
+    "end_page_idx": 26,
+    "heading": "6.1 Tipos de Operações de Seguro"
+  },
+  {
+    "slug": "operacao-interna/admissao-de-novos-associados",
+    "start_page_idx": 27,
+    "end_page_idx": 28,
+    "heading": "7.1 Processo de Admissão — Fluxo Operacional"
+  },
+  {
+    "slug": "operacao-interna/helpdesk-freshdesk",
+    "start_page_idx": 29,
+    "end_page_idx": 30,
+    "heading": "8.1 O que é o Freshdesk"
+  },
+  {
+    "slug": "operacao-interna/atendimento-telefonico",
+    "start_page_idx": 31,
+    "end_page_idx": 35,
+    "heading": "9.1 Fórmula de Atendimento"
+  }
+]

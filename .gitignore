@@ -1,0 +1,89 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# Type checkers / linters
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# ---------- Node / Frontend ----------
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+dist/
+build/
+.vite/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+
+# ---------- Environment & Secrets ----------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+
+# ---------- Databases ----------
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+
+# ---------- IDE / Editors ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ---------- Logs ----------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---------- OS ----------
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------- Project-specific ----------
+uploads/
+media/
+static_collected/
+
+# Intermediate extraction artefacts (already uploaded to Supabase Storage).
+# The JSON manifests are kept so a fresh clone can re-run the import.
+backend/scripts/_extracted_images/

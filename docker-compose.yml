@@ -1,0 +1,28 @@
+# Local development only.
+# Production runs on Railway (backend + frontend) with the database on Supabase.
+# No local Postgres service is needed — set DATABASE_URL to the Supabase pooler URL.
+
+services:
+  backend:
+    build: ./backend
+    container_name: alep_intranet_backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build: ./frontend
+    container_name: alep_intranet_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
