@@ -18,6 +18,24 @@ Registo cronológico de alterações ao projecto **ALEP Intranet** e gestão de 
 
 ## 🟢 Histórico de Alterações
 
+### 2026-05-29 — Versioning de conteúdo (até 5 versões por bloco) ✅
+- Cada edição agora cria uma **nova linha** em `content_blocks` em vez de sobrescrever; o anterior fica marcado `is_current=false`. Pruning automático mantém no máximo 5 versões por bloco.
+- 3 colunas novas:
+  - `lineage_id` (UUID, NOT NULL) — identificador estável de um bloco entre edições; é o que programas externos devem referenciar para links permanentes.
+  - `version` (INTEGER) — incrementa em cada edit (1, 2, 3, ...).
+  - `is_current` (BOOLEAN) — o filtro fácil: `WHERE is_current = true` devolve o conteúdo visível.
+- Endpoints novos:
+  - `GET /api/v1/content-blocks/{id}/versions` — lista todas as versões da linhagem, mais recente primeiro (até 5).
+  - `POST /api/v1/content-blocks/{id}/restore/{n}` — restaura a versão `n` (cria uma nova versão actual com o body antigo; o restore fica gravado em history).
+- Migração Alembic: `a1afe2a8d505_content_block_versioning_lineage_id_.py` (com backfill: cada bloco existente fica com `lineage_id = id, version = 1, is_current = true`).
+- Comportamento:
+  - `list_for_page` filtra por `is_current = true` (só conteúdo visível).
+  - Edição "no-op" (mesmo body + block_type) **não** cria nova versão — evita ruído.
+  - Position é partilhada entre versões da mesma linhagem; insert above/below move todo o histórico em conjunto.
+  - `delete_block` apaga a linhagem inteira (todas as versões).
+- Smoke-test local + verificação em produção: tudo a verde; `scripts/test_live_site.py` continua 9/9.
+- **Commit:** `9c6af9f` — `feat(content): copy-on-write versioning with up to 5 history rows per block`
+
 ### 2026-05-29 — Intranet 100% operacional em produção ✅
 - Todos os 9 testes do `scripts/test_live_site.py` passam contra os domínios Railway.
 - Resolvido o último erro pendente (`VITE_API_URL` hardcoded para o backend correto).
