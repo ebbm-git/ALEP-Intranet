@@ -60,7 +60,30 @@ def update_block(
     return ContentBlockRead.model_validate(block)
 
 
+@router.get("/{block_id}/versions", response_model=list[ContentBlockRead])
+def list_versions(block_id: uuid.UUID, db: Session = Depends(get_db)) -> list[ContentBlockRead]:
+    """All versions (current + historical) of the block's lineage, newest first.
+    Up to 5 entries (older versions are pruned on edit)."""
+    versions = svc.list_versions(db, block_id)
+    return [ContentBlockRead.model_validate(v) for v in versions]
+
+
+@router.post(
+    "/{block_id}/restore/{version}",
+    response_model=ContentBlockRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def restore_version(
+    block_id: uuid.UUID, version: int, db: Session = Depends(get_db)
+) -> ContentBlockRead:
+    """Restore a historical version of this block: copies the old body into a
+    new current version (so the restore itself is recorded in history)."""
+    block = svc.restore_version(db, block_id, version)
+    return ContentBlockRead.model_validate(block)
+
+
 @router.delete("/{block_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 def delete_block(block_id: uuid.UUID, db: Session = Depends(get_db)) -> Response:
+    """Delete the entire lineage (all versions). Closes the position gap."""
     svc.delete_block(db, block_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

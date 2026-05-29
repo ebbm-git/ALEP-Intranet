@@ -25,6 +25,12 @@ class ContentBlockRead(ContentBlockBase):
 
     id: uuid.UUID
     page_id: uuid.UUID
+    # Versioning fields. External programs that want the live content should
+    # filter blocks by `is_current = true`. `lineage_id` is the stable identifier
+    # to use across edits.
+    lineage_id: uuid.UUID
+    version: int
+    is_current: bool
     position: int
     created_at: datetime
     updated_at: datetime
