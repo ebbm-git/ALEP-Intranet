@@ -10,16 +10,27 @@ Registo cronológico de alterações ao projecto **ALEP Intranet** e gestão de 
 
 ## 🔴 Erros Pendentes
 
-- [ ] **2026-05-29 — `VITE_API_URL` mal configurado no frontend Railway.**
-  O bundle de produção contém o URL do *próprio* frontend (`frontend-production-372c.up.railway.app`) em vez do URL do backend (`backend-production-2684.up.railway.app`). Em runtime no browser, as chamadas `/api/v1/*` vão para sítio errado e a homepage carrega vazia.
-  **Fix:** No Railway, serviço `frontend` → **Variables** → editar `VITE_API_URL` para um destes (qualquer um serve):
-   - `https://${{backend.RAILWAY_PUBLIC_DOMAIN}}/api/v1` (com a referência cruzada)
-   - `https://backend-production-2684.up.railway.app/api/v1` (hardcoded — mais à prova de bala)
-  Depois salvar; o Railway redeploy automaticamente; aguardar build (~1-2 min) e re-correr `scripts/test_live_site.py`.
+- [x] ~~**2026-05-29 — `VITE_API_URL` mal configurado no frontend Railway.**~~
+  ~~Bundle apontava para o próprio frontend em vez do backend.~~
+  **Resolvido em 2026-05-29** pelo utilizador, substituindo o valor por `https://backend-production-2684.up.railway.app/api/v1` (hardcoded) no serviço Railway. Verificado por `scripts/test_live_site.py` (9/9 PASS).
 
 ---
 
 ## 🟢 Histórico de Alterações
+
+### 2026-05-29 — Intranet 100% operacional em produção ✅
+- Todos os 9 testes do `scripts/test_live_site.py` passam contra os domínios Railway.
+- Resolvido o último erro pendente (`VITE_API_URL` hardcoded para o backend correto).
+- Estado actual:
+  - Backend: `https://backend-production-2684.up.railway.app` (FastAPI + Supabase Postgres)
+  - Frontend: `https://frontend-production-372c.up.railway.app` (React SPA, builda no arranque)
+  - Storage: bucket público `MediaGeral` na Supabase (18 imagens)
+  - CORS preflight verificado a permitir o domínio do frontend.
+
+### 2026-05-29 — Adicionado `scripts/test_live_site.py` + estrutura HIST_DEV.md
+- 9 checks end-to-end: `/health`, `/api/v1/pages/tree`, página de exemplo, OpenAPI doc, HTML do frontend, bundle JS, wiring frontend→backend, imagem Storage pública, CORS preflight.
+- Pode ser invocado a qualquer momento — agente de verificação ad-hoc.
+- HIST_DEV.md criado com secções de Erros Pendentes + Histórico.
 
 ### 2026-05-29 — Frontend: build no arranque para sobreviver a qualquer builder do Railway
 - **Problema:** O builder Railpack do Railway não estava a correr `npm run build`, deixando `dist/` vazio e o `serve` a devolver 404 da edge.
