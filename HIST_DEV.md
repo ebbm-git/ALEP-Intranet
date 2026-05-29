@@ -18,6 +18,17 @@ Registo cronológico de alterações ao projecto **ALEP Intranet** e gestão de 
 
 ## 🟢 Histórico de Alterações
 
+### 2026-05-29 — UI: modal de histórico de versões em cada bloco ✅
+- Botão **"🕒 Histórico"** novo em cada `ContentBlock` (mostra "v2"/"v3"/etc quando há histórico).
+- Modal full-screen com layout 2 colunas:
+  - Esquerda: lista de versões (mais recente em cima), com tag de versão, data, preview de 2 linhas. A actual é marcada com badge "actual" e borda em accent.
+  - Direita: preview Markdown completo da versão seleccionada + botão **"Restaurar esta versão"** (escondido na versão actual).
+- Fecha com ESC ou click no backdrop.
+- Restaurar chama `POST /api/v1/content-blocks/{id}/restore/{n}` e invalida queries do React Query para refresh imediato.
+- Layout responsive: em ecrãs pequenos, lista fica no topo.
+- 9/9 testes de live continuam a passar.
+- **Commit:** `213e0f6` — `feat(frontend): version history modal — view + restore previous versions`
+
 ### 2026-05-29 — Versioning de conteúdo (até 5 versões por bloco) ✅
 - Cada edição agora cria uma **nova linha** em `content_blocks` em vez de sobrescrever; o anterior fica marcado `is_current=false`. Pruning automático mantém no máximo 5 versões por bloco.
 - 3 colunas novas:
