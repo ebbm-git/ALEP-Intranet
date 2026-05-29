@@ -3,6 +3,8 @@ builder = "NIXPACKS"
 buildCommand = "npm ci && npm run build"
 
 [deploy]
-startCommand = "npx serve -s dist -l $PORT"
+# serve v14 needs a full endpoint with protocol; wrap in sh -c so $PORT expands
+# even if Railway passes startCommand directly without a shell.
+startCommand = "sh -c 'npx serve -s dist -l tcp://0.0.0.0:${PORT:-3000}'"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
