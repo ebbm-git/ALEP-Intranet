@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MarkdownView from "./MarkdownView.jsx";
+import VersionHistory from "./VersionHistory.jsx";
 import { updateBlock, deleteBlock, queryKeys } from "../services/queries.js";
 
 const MDEditor = lazy(() => import("@uiw/react-md-editor"));
@@ -8,6 +9,7 @@ const MDEditor = lazy(() => import("@uiw/react-md-editor"));
 export default function ContentBlock({ block, pagePath }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(block.body);
+  const [showHistory, setShowHistory] = useState(false);
   const qc = useQueryClient();
 
   const invalidate = () => qc.invalidateQueries({ queryKey: queryKeys.page(pagePath) });
@@ -60,6 +62,13 @@ export default function ContentBlock({ block, pagePath }) {
               ✏️ Editar
             </button>
             <button
+              className="btn small"
+              onClick={() => setShowHistory(true)}
+              title="Ver histórico de versões"
+            >
+              🕒 Histórico{block.version > 1 ? ` (v${block.version})` : ""}
+            </button>
+            <button
               className="btn small danger"
               onClick={() => {
                 if (confirm("Tem a certeza que pretende eliminar esta secção?")) {
@@ -73,6 +82,14 @@ export default function ContentBlock({ block, pagePath }) {
             </button>
           </div>
         </>
+      )}
+
+      {showHistory && (
+        <VersionHistory
+          blockId={block.id}
+          pagePath={pagePath}
+          onClose={() => setShowHistory(false)}
+        />
       )}
     </section>
   );

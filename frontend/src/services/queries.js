@@ -3,6 +3,7 @@ import { api } from "./api.js";
 export const queryKeys = {
   tree: ["pages", "tree"],
   page: (path) => ["pages", "by-path", path],
+  versions: (blockId) => ["content-blocks", blockId, "versions"],
 };
 
 export const fetchTree = async () => {
@@ -35,5 +36,15 @@ export const appendBlock = async ({ pageId, body = "" }) => {
     body,
     block_type: "markdown",
   });
+  return data;
+};
+
+export const fetchVersions = async (blockId) => {
+  const { data } = await api.get(`/content-blocks/${blockId}/versions`);
+  return data;
+};
+
+export const restoreVersion = async ({ blockId, version }) => {
+  const { data } = await api.post(`/content-blocks/${blockId}/restore/${version}`);
   return data;
 };
