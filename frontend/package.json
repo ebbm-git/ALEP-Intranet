@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "start": "vite build && serve -s dist -l tcp://0.0.0.0:${PORT:-3000}",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write ."
   },
@@ -14,18 +15,18 @@
     "@supabase/supabase-js": "^2.45.4",
     "@tanstack/react-query": "^5.59.16",
     "@uiw/react-md-editor": "^4.0.5",
+    "@vitejs/plugin-react": "^4.3.3",
     "axios": "^1.7.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.27.0",
     "remark-gfm": "^4.0.0",
-    "serve": "^14.2.4"
+    "serve": "^14.2.4",
+    "vite": "^5.4.10"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.3",
     "eslint": "^9.13.0",
-    "prettier": "^3.3.3",
-    "vite": "^5.4.10"
+    "prettier": "^3.3.3"
   }
 }
