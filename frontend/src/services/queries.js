@@ -61,6 +61,16 @@ export const fetchAdminUsers = async () => {
   return data;
 };
 
+export const createUser = async ({ email, password, fullName, role }) => {
+  const { data } = await api.post(`/admin/users`, {
+    email,
+    password,
+    full_name: fullName || null,
+    role,
+  });
+  return data;
+};
+
 export const updateUserRole = async ({ userId, role }) => {
   const { data } = await api.patch(`/admin/users/${userId}`, { role });
   return data;

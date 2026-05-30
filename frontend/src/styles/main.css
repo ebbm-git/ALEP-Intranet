@@ -589,3 +589,58 @@ a:hover { text-decoration: underline; }
   cursor: pointer;
   accent-color: var(--color-primary);
 }
+
+/* ---- Config: action bar above the user table ---- */
+.config-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.5rem 0 0.5rem;
+}
+.config-actions-bar p {
+  margin: 0;
+}
+
+/* ---- Create-user modal ---- */
+.modal-panel.modal-narrow {
+  width: min(460px, 100%);
+}
+.create-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.create-user-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+.create-user-form label > span:first-child {
+  color: var(--color-muted);
+}
+.create-user-form input,
+.create-user-form select {
+  font: inherit;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: white;
+}
+.password-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.password-row input {
+  flex: 1;
+  font-family: ui-monospace, "Cascadia Mono", Menlo, monospace;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 0.85rem;
+}

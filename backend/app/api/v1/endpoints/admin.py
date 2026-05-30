@@ -4,17 +4,20 @@ from __future__ import annotations
 
 import uuid
 
+import httpx
 from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.core.auth import CurrentUser
+from app.core.config import settings
 from app.core.permissions import require_admin
 from app.db.session import get_db
 from app.models import RolePagePermission, UserProfile, UserRole
 from app.schemas import (
     PermissionCell,
     RolePagePermissionRead,
+    UserCreateAdmin,
     UserProfileRead,
     UserRoleUpdate,
 )
@@ -31,6 +34,67 @@ def list_users(
 ) -> list[UserProfileRead]:
     rows = list(db.scalars(select(UserProfile).order_by(UserProfile.email)))
     return [UserProfileRead.model_validate(r) for r in rows]
+
+
+@router.post("/users", response_model=UserProfileRead, status_code=201)
+def create_user(
+    payload: UserCreateAdmin,
+    _: CurrentUser = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> UserProfileRead:
+    """Create a new user via Supabase Auth Admin API + insert their profile.
+    Email is auto-confirmed so the user can log in immediately."""
+    if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_ROLE_KEY:
+        raise HTTPException(
+            status_code=500,
+            detail="SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be configured",
+        )
+
+    # 1. Create in Supabase Auth (uses service-role privileges).
+    try:
+        r = httpx.post(
+            f"{settings.SUPABASE_URL.rstrip('/')}/auth/v1/admin/users",
+            headers={
+                "apikey": settings.SUPABASE_SERVICE_ROLE_KEY,
+                "Authorization": f"Bearer {settings.SUPABASE_SERVICE_ROLE_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "email": payload.email,
+                "password": payload.password,
+                "email_confirm": True,
+                "user_metadata": {"full_name": payload.full_name} if payload.full_name else {},
+            },
+            timeout=15,
+        )
+    except httpx.HTTPError as e:
+        raise HTTPException(status_code=503, detail=f"Auth provider error: {e}") from e
+
+    if r.status_code not in (200, 201):
+        # Surface Supabase's error message — usually "already registered".
+        detail = r.json().get("msg") or r.json().get("error_description") or r.text
+        raise HTTPException(status_code=400, detail=f"Supabase rejected: {detail}")
+
+    sb_user = r.json()
+    user_id = uuid.UUID(sb_user["id"])
+
+    # 2. Insert / upsert local profile with the requested role.
+    existing = db.get(UserProfile, user_id)
+    if existing:
+        existing.role = payload.role
+        existing.full_name = payload.full_name or existing.full_name
+        profile = existing
+    else:
+        profile = UserProfile(
+            user_id=user_id,
+            email=payload.email,
+            full_name=payload.full_name,
+            role=payload.role,
+        )
+        db.add(profile)
+    db.commit()
+    db.refresh(profile)
+    return UserProfileRead.model_validate(profile)
 
 
 @router.patch("/users/{user_id}", response_model=UserProfileRead)

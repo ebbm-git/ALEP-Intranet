@@ -30,6 +30,15 @@ class UserRoleUpdate(BaseModel):
     role: UserRole
 
 
+class UserCreateAdmin(BaseModel):
+    """Payload for admin creating a new user (skips the public signup flow)."""
+
+    email: EmailStr
+    password: str
+    full_name: str | None = None
+    role: UserRole = UserRole.viewer
+
+
 class RolePagePermissionRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

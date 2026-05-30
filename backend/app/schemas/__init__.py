@@ -2,6 +2,7 @@ from app.schemas.auth import (
     CurrentUserRead,
     PermissionCell,
     RolePagePermissionRead,
+    UserCreateAdmin,
     UserProfileRead,
     UserRoleUpdate,
 )
@@ -25,6 +26,7 @@ __all__ = [
     "PermissionCell",
     "RolePagePermissionRead",
     "UserCreate",
+    "UserCreateAdmin",
     "UserProfileRead",
     "UserRead",
     "UserRoleUpdate",
