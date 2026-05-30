@@ -18,6 +18,13 @@ Registo cronológico de alterações ao projecto **ALEP Intranet** e gestão de 
 
 ## 🟢 Histórico de Alterações
 
+### 2026-05-30 — Criação de utilizadores via Configurações ✅
+- Botão **"+ Novo utilizador"** em Configurações → Utilizadores.
+- Modal com email, nome, palavra-passe inicial (com botão Gerar via `crypto.getRandomValues`) e papel.
+- Backend endpoint novo `POST /api/v1/admin/users` que usa a service-role key para criar a conta em `auth.users` (`email_confirm=true` para login imediato) e depois cria o `user_profile` local com o papel escolhido.
+- Antes desta alteração, o único caminho de onboarding era os utilizadores fazerem signup público sozinhos; agora o admin cria contas diretamente.
+- **Commit:** `7c9e640` — `feat(admin): create users from Configurações > Utilizadores`
+
 ### 2026-05-30 — Supabase Auth com 5 papéis e grelha de permissões ✅
 - **5 papéis** (do mais alto ao mais baixo):
   - `admin` — tudo
