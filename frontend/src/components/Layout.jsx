@@ -1,7 +1,8 @@
-import { Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import TopNav from "./TopNav.jsx";
 import SideNav from "./SideNav.jsx";
+import UserMenu from "./UserMenu.jsx";
 import { fetchTree, queryKeys } from "../services/queries.js";
 
 export default function Layout() {
@@ -16,11 +17,12 @@ export default function Layout() {
   return (
     <div className="layout">
       <header className="topbar">
-        <div className="brand">
+        <Link to="/" className="brand">
           <span className="brand-logo">ALEP</span>
           <span className="brand-sub">Intranet</span>
-        </div>
+        </Link>
         <TopNav tree={tree ?? []} loading={isLoading} />
+        <UserMenu />
       </header>
       <div className="body">
         <aside className="sidebar">

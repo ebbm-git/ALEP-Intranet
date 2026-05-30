@@ -1,3 +1,10 @@
+from app.schemas.auth import (
+    CurrentUserRead,
+    PermissionCell,
+    RolePagePermissionRead,
+    UserProfileRead,
+    UserRoleUpdate,
+)
 from app.schemas.content_block import (
     ContentBlockCreate,
     ContentBlockRead,
@@ -10,11 +17,16 @@ __all__ = [
     "ContentBlockCreate",
     "ContentBlockRead",
     "ContentBlockUpdate",
+    "CurrentUserRead",
     "PageCreate",
     "PageRead",
     "PageTreeNode",
     "PageUpdate",
+    "PermissionCell",
+    "RolePagePermissionRead",
     "UserCreate",
+    "UserProfileRead",
     "UserRead",
+    "UserRoleUpdate",
     "UserUpdate",
 ]

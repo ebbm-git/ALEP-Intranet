@@ -100,34 +100,21 @@ def check_backend_health(backend: str) -> tuple[bool, str]:
 
 
 @check(
-    "backend /api/v1/pages/tree returns 3 top-level sections",
-    suggestion="Database may be empty (seed not run) or DATABASE_URL points at wrong DB.",
+    "backend /api/v1/pages/tree rejects unauthenticated callers (401)",
+    suggestion="If 200 with data, the endpoint isn't gated. Should require Bearer auth now.",
 )
-def check_backend_tree(backend: str) -> tuple[bool, str]:
+def check_backend_tree_requires_auth(backend: str) -> tuple[bool, str]:
     r = httpx.get(f"{backend}/api/v1/pages/tree", timeout=30)
-    if r.status_code != 200:
-        return False, f"HTTP {r.status_code}: {r.text[:120]}"
-    data = r.json()
-    if not isinstance(data, list):
-        return False, f"unexpected payload: {str(data)[:120]}"
-    titles = [n.get("title") for n in data]
-    detail = f"top-level: {titles}"
-    return (len(data) == 3), detail
+    return (r.status_code == 401), f"HTTP {r.status_code}"
 
 
 @check(
-    "backend /api/v1/pages/by-path/operacao-interna/seguros returns content",
-    suggestion="Seed/import may not have populated content_blocks. Run import_extracted_content.py.",
+    "backend /api/v1/pages/by-path/... rejects unauthenticated callers (401)",
+    suggestion="Endpoint should require auth.",
 )
-def check_backend_page(backend: str) -> tuple[bool, str]:
+def check_backend_page_requires_auth(backend: str) -> tuple[bool, str]:
     r = httpx.get(f"{backend}/api/v1/pages/by-path/operacao-interna/seguros", timeout=30)
-    if r.status_code != 200:
-        return False, f"HTTP {r.status_code}: {r.text[:120]}"
-    data = r.json()
-    blocks = data.get("blocks", [])
-    body_len = len(blocks[0]["body"]) if blocks else 0
-    detail = f"page='{data.get('page',{}).get('title')}' blocks={len(blocks)} first_body_len={body_len}"
-    return (len(blocks) >= 1 and body_len > 200), detail
+    return (r.status_code == 401), f"HTTP {r.status_code}"
 
 
 @check(
@@ -242,8 +229,8 @@ def main() -> int:
 
     rep = Report()
     check_backend_health(rep, args.backend)
-    check_backend_tree(rep, args.backend)
-    check_backend_page(rep, args.backend)
+    check_backend_tree_requires_auth(rep, args.backend)
+    check_backend_page_requires_auth(rep, args.backend)
     check_backend_openapi(rep, args.backend)
     check_frontend_html(rep, args.frontend)
     check_frontend_bundle(rep, args.frontend)

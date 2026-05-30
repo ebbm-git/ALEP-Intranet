@@ -48,3 +48,43 @@ export const restoreVersion = async ({ blockId, version }) => {
   const { data } = await api.post(`/content-blocks/${blockId}/restore/${version}`);
   return data;
 };
+
+// ---------- Admin ----------
+
+export const adminQueryKeys = {
+  users: ["admin", "users"],
+  permissions: ["admin", "permissions"],
+};
+
+export const fetchAdminUsers = async () => {
+  const { data } = await api.get("/admin/users");
+  return data;
+};
+
+export const updateUserRole = async ({ userId, role }) => {
+  const { data } = await api.patch(`/admin/users/${userId}`, { role });
+  return data;
+};
+
+export const deleteUser = async (userId) => {
+  await api.delete(`/admin/users/${userId}`);
+};
+
+export const fetchPermissions = async () => {
+  const { data } = await api.get("/admin/permissions");
+  return data;
+};
+
+export const setPermissionCell = async ({ role, pageId, hasAccess }) => {
+  const { data } = await api.post("/admin/permissions", {
+    role,
+    page_id: pageId,
+    has_access: hasAccess,
+  });
+  return data;
+};
+
+export const bulkReplacePermissions = async (cells) => {
+  const { data } = await api.put("/admin/permissions/bulk", cells);
+  return data;
+};

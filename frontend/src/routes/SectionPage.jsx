@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPageByPath, queryKeys, appendBlock } from "../services/queries.js";
 import ContentBlock from "../components/ContentBlock.jsx";
 import BlockInserter from "../components/BlockInserter.jsx";
+import { useCanEditPage } from "../auth/AuthContext.jsx";
 
 export default function SectionPage() {
   const { topSlug, childSlug } = useParams();
@@ -16,12 +17,21 @@ export default function SectionPage() {
     retry: false,
   });
 
+  const canEdit = useCanEditPage(data?.page?.id);
+
   if (isLoading) return <p>A carregar…</p>;
   if (isError) {
     if (error?.response?.status === 404) {
-      // top-level page with no children landing handled here too
       nav("/404", { replace: true });
       return null;
+    }
+    if (error?.response?.status === 403) {
+      return (
+        <div className="error">
+          <h1>Sem acesso</h1>
+          <p>Não tem permissão para ver esta página.</p>
+        </div>
+      );
     }
     return <p className="error">Erro a carregar a página: {error.message}</p>;
   }
@@ -58,16 +68,20 @@ export default function SectionPage() {
         {blocks.length === 0 ? (
           <div className="empty">
             <p>Esta página ainda não tem conteúdo.</p>
-            <button className="btn primary" onClick={handleAppend}>
-              + Adicionar primeira secção
-            </button>
+            {canEdit && (
+              <button className="btn primary" onClick={handleAppend}>
+                + Adicionar primeira secção
+              </button>
+            )}
           </div>
         ) : (
           blocks.map((b, i) => (
             <div key={b.id}>
-              {i === 0 && <BlockInserter anchorId={b.id} where="above" pagePath={path} />}
+              {i === 0 && canEdit && (
+                <BlockInserter anchorId={b.id} where="above" pagePath={path} />
+              )}
               <ContentBlock block={b} pagePath={path} />
-              <BlockInserter anchorId={b.id} where="below" pagePath={path} />
+              {canEdit && <BlockInserter anchorId={b.id} where="below" pagePath={path} />}
             </div>
           ))
         )}

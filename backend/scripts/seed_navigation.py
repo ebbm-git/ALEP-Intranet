@@ -22,7 +22,7 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 from sqlalchemy import select  # noqa: E402
 
 from app.db.session import SessionLocal  # noqa: E402
-from app.models import ContentBlock, Page  # noqa: E402
+from app.models import ContentBlock, Page, RolePagePermission, UserRole  # noqa: E402
 
 
 NAVIGATION = [
@@ -104,6 +104,24 @@ def ensure_starter_block(session, page: Page) -> None:
     )
 
 
+def ensure_default_permissions(session) -> int:
+    """Grant every non-admin role access to every page, if not already set.
+    Admins are NOT stored here (they have implicit access)."""
+    n_added = 0
+    non_admin_roles = [r for r in UserRole if r is not UserRole.admin]
+    all_page_ids = list(session.scalars(select(Page.id)))
+    existing = {
+        (perm.role, perm.page_id)
+        for perm in session.scalars(select(RolePagePermission))
+    }
+    for role in non_admin_roles:
+        for pid in all_page_ids:
+            if (role, pid) not in existing:
+                session.add(RolePagePermission(role=role, page_id=pid))
+                n_added += 1
+    return n_added
+
+
 def main() -> None:
     with SessionLocal() as session:
         for top_pos, top in enumerate(NAVIGATION):
@@ -123,7 +141,10 @@ def main() -> None:
                     position=child_pos,
                 )
                 ensure_starter_block(session, child)
+        n_perms = ensure_default_permissions(session)
         session.commit()
+        if n_perms:
+            print(f"  Granted {n_perms} default role-page permissions.")
 
     print("Seed complete.")
     with SessionLocal() as session:

@@ -24,6 +24,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     DATABASE_URL_DIRECT: str | None = None
 
+    # Supabase Auth + Storage. SUPABASE_URL is used to validate JWTs against
+    # /auth/v1/user. SERVICE_ROLE_KEY is only used for server-side admin
+    # operations (Storage uploads, listing auth.users).
+    SUPABASE_URL: str | None = None
+    SUPABASE_ANON_KEY: str | None = None
+    SUPABASE_SERVICE_ROLE_KEY: str | None = None
+
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] | list[str] = []
 
     FIRST_SUPERUSER_EMAIL: EmailStr | None = None
