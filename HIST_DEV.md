@@ -18,6 +18,31 @@ Registo cronológico de alterações ao projecto **ALEP Intranet** e gestão de 
 
 ## 🟢 Histórico de Alterações
 
+### 2026-05-30 — Supabase Auth com 5 papéis e grelha de permissões ✅
+- **5 papéis** (do mais alto ao mais baixo):
+  - `admin` — tudo
+  - `editor_chief` — edita + apaga blocos nas páginas com acesso, sem Configurações
+  - `editor_a` — edita blocos nas páginas com acesso
+  - `editor_b` — igual a `editor_a` (existe como segundo "carril" para o admin atribuir conjuntos diferentes de páginas a departamentos diferentes)
+  - `viewer` — leitura nas páginas com acesso
+- **Bootstrap**: o primeiro utilizador a autenticar-se torna-se automaticamente `admin`; signups seguintes começam como `viewer`.
+- **Backend**:
+  - JWT validado contra `<supabase>/auth/v1/user` (funciona com `sb_publishable`/`sb_secret` novos)
+  - Tabelas novas: `user_profiles`, `role_page_permissions`
+  - Endpoints `/api/v1/admin/users` (GET/PATCH/DELETE), `/api/v1/admin/permissions` (GET/POST/PUT-bulk), `/api/v1/auth/me`
+  - Todos os endpoints de conteúdo passaram a requerer auth + check de permissão
+  - `pages/tree` filtra ramos a que o utilizador não tem acesso (admins vêem tudo)
+- **Frontend**:
+  - `AuthProvider` + `useAuth()`/`useCanEditPage()`/`useCanDeletePage()`
+  - Páginas `/login` + `/signup`
+  - `ContentBlock` + `SectionPage` escondem botões consoante o papel + acesso
+  - Menu top-right com avatar, papel actual e logout
+  - `/configuracoes/utilizadores` (lista, mudar papel, remover) e `/configuracoes/permissoes` (grelha papéis × páginas, click para activar/desactivar, botão Guardar)
+- **Migração**: `78d90d5310ad_auth_user_profiles_role_page_permissions.py`
+- **Seed**: `seed_navigation.py` agora concede a cada papel não-admin acesso a todas as páginas por defeito (o admin restringe via grelha).
+- **Tester**: `scripts/test_live_site.py` agora verifica que endpoints protegidos respondem 401 sem token. 9/9 PASS.
+- **Commit:** `ef1933a` — `feat(auth): 5-tier Supabase Auth with per-page permission grid`
+
 ### 2026-05-29 — UI: modal de histórico de versões em cada bloco ✅
 - Botão **"🕒 Histórico"** novo em cada `ContentBlock` (mostra "v2"/"v3"/etc quando há histórico).
 - Modal full-screen com layout 2 colunas:
